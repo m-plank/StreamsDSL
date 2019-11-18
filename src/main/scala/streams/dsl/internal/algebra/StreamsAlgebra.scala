@@ -35,32 +35,12 @@ sealed abstract class StreamQ[F[_]: Interpreter, A] extends AbsStream[F, A] {
 
 }
 
-sealed trait Input[A]
-case class PureInput[A](seq: Iterable[A]) extends Input[A]
-case class FileInput[A](path: String) extends Input[A]
-case class TextFileInput(path: String) extends Input[String]
-
 case class FromInput[F[_]: Interpreter, A](private val in: Input[A])
     extends StreamQ[F, A] {
   private[internal] def stream: F[A] =
     implicitly[Interpreter[F]].fromInput(in)
 }
 
-sealed trait Transform[A, B]
-sealed abstract class FilterOps[A](predicate: A => Boolean)
-case class MapTransform[A, B](f: A => B) extends Transform[A, B]
-case class MapConcatTransform[A, B](f: A => Iterable[B]) extends Transform[A, B]
-
-case class DropWhileOp[A](predicate: A => Boolean)
-    extends FilterOps[A](predicate)
-case class TakeWhileOp[A](predicate: A => Boolean)
-    extends FilterOps[A](predicate)
-case class FilterOp[A](predicate: A => Boolean) extends FilterOps[A](predicate)
-
-case class SplitConcatTransform[A, B: Monoid](splitBy: A => Boolean,
-                                              concat: (B, A) => B)
-
-/////////STREAM CONVERSIONS/////////////////////////////////////////////
 case class Map[F[_]: Interpreter, A, B](private val s: StreamQ[F, A],
                                         private val transform: Transform[A, B])
     extends StreamQ[F, B] {
@@ -97,6 +77,3 @@ case class Sink[F[_]: Interpreter, A](private[internal] val s: StreamQ[F, A],
 
 case class Pure[F[_]: Interpreter, A](private[internal] val s: StreamQ[F, A])
     extends AbsStream[F, A]
-
-sealed trait Output[A]
-case class FileOutput[A](private val path: String) extends Output[A]
