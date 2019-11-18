@@ -1,5 +1,6 @@
 package streams.dsl.internal
 
+import cats.kernel.Monoid
 import scala.collection.immutable.Iterable
 
 /**
@@ -17,6 +18,9 @@ sealed abstract class StreamQ[F[_]: Interpreter, A] extends AbsStream[F, A] {
 
   def collect[B](pf: PartialFunction[A, B]): StreamQ[F, B] =
     Collect(this, pf)
+
+  def splitConcat[B: Monoid](f: SplitConcatTransform[A, B]): StreamQ[F, B] =
+    SplitConcat(this, f)
 
   def to(out: Output[A]): Sink[F, A] = Sink(this, out)
 
@@ -39,11 +43,22 @@ sealed trait Transform[A, B]
 case class MapTransform[A, B](f: A => B) extends Transform[A, B]
 case class MapConcatTransform[A, B](f: A => Iterable[B]) extends Transform[A, B]
 
+case class SplitConcatTransform[A, B: Monoid](splitBy: A => Boolean,
+                                              concat: (B, A) => B)
+
 case class Map[F[_]: Interpreter, A, B](private val s: StreamQ[F, A],
                                         private val transform: Transform[A, B])
     extends StreamQ[F, B] {
   private[internal] def stream: F[B] =
     implicitly[Interpreter[F]].transform(s.stream, transform)
+}
+
+case class SplitConcat[F[_]: Interpreter, A, B: Monoid](
+  private val s: StreamQ[F, A],
+  private val splitConcat: SplitConcatTransform[A, B]
+) extends StreamQ[F, B] {
+  private[internal] def stream: F[B] =
+    implicitly[Interpreter[F]].splitConcat(s.stream, splitConcat)
 }
 
 case class Collect[F[_]: Interpreter, A, B](

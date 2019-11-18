@@ -8,6 +8,8 @@ lazy val root = (project in file(".")).settings(
   ),
   name := "StreamsDSL",
   resolvers += Resolver.mavenLocal,
+  testScalastyle := scalastyle.in(Compile).toTask("").value,
+  (test in Test) := ((test in Test) dependsOn testScalastyle).value,
   libraryDependencies ++= Seq(
     "org.typelevel" %% "cats-effect" % "2.0.0",
     "org.typelevel" %% "cats-free" % "2.0.0",
@@ -20,3 +22,4 @@ lazy val root = (project in file(".")).settings(
   ),
   addCommandAlias("co", ";clean;coverage;test;coverageReport")
 )
+lazy val testScalastyle = taskKey[Unit]("testScalastyle")

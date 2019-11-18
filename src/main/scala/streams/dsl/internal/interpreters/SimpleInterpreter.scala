@@ -1,5 +1,6 @@
 package streams.dsl.internal.interpreters
 
+import cats.kernel.Monoid
 import streams.dsl.internal._
 import scala.io.Source
 
@@ -32,4 +33,16 @@ object SimpleInterpreter extends Interpreter[Stream] {
   private[internal] def collect[A, B](s: Stream[A],
                                       pf: PartialFunction[A, B]): Stream[B] =
     s.collect(pf)
+
+  private[internal] def splitConcat[A, B: Monoid](
+    s: Stream[A],
+    f: SplitConcatTransform[A, B]
+  ) = {
+    val m = implicitly[Monoid[B]]
+    s.foldLeft(Stream.empty[B])(
+      (acc, b) =>
+        if (f.splitBy(b)) Stream.empty[B]
+        else (f.concat(acc.headOption.getOrElse(m.empty), b)) #:: acc
+    )
+  }
 }

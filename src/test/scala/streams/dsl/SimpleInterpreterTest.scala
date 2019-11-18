@@ -29,4 +29,11 @@ class SimpleInterpreterTest extends FlatSpec with Matchers with DSLSamples {
     mapConcatDsl[Stream].pureRun.unsafeRunSync() shouldBe
       Stream("No", "pain", "no", "gain")
   }
+
+  //todo: implement later!!!
+  ignore should "split concat stream" in {
+
+    splitConcatDsl[Stream].pureRun.unsafeRunSync() shouldBe
+      List("No pain no gain", "Refused to give up quick")
+  }
 }

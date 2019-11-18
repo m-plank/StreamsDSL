@@ -42,7 +42,19 @@ class AllInterpretersTest extends FlatSpec with Matchers with DSLSamples {
       .pureRun(fs2.eff)
       .unsafeRunSync() shouldBe expected
 
-    Fs2Example
+  }
+
+  it should "split concat stream" in {
+    val expected = List("No pain no gain", "Refused to give up quick")
+
+    splitConcatDsl(akka.int)
+      .pureRun(akka.eff)
+      .unsafeRunSync() shouldBe expected
+
+    splitConcatDsl(fs2.int)
+      .pureRun(fs2.eff)
+      .unsafeRunSync() shouldBe expected
 
   }
+
 }

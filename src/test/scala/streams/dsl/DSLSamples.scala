@@ -4,6 +4,7 @@ import streams.dsl.internal.StreamIOAPI.from
 import streams.dsl.internal._
 import streams.dsl.internal.interpreters.StreamsAPI._
 import scala.util.Try
+import cats.implicits._
 
 /**
   * Created by Bondarenko on Nov, 13, 2019
@@ -28,6 +29,30 @@ trait DSLSamples {
     from(PureInput(List("No pain no gain")))
       .through(mapConcat(_.split(" ").toList))
       .pure()
+
+  def splitConcatDsl[F[_]: Interpreter] =
+    from(
+      PureInput(
+        List(
+          "No",
+          "pain",
+          "no",
+          "gain",
+          "==",
+          "Refused",
+          "to",
+          "give",
+          "up",
+          "quick",
+          "=="
+        )
+      )
+    ).splitConcat(
+        SplitConcatTransform[String, String](_ == "==", (a, b) => s"$a $b".trim)
+      )
+      .pure()
+
+  //
 
   def impureDsl[F[_]: Interpreter]() = {
     from(TextFileInput("src/test/resources/numbers.txt"))

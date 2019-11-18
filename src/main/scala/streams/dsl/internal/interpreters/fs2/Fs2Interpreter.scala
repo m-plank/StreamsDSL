@@ -1,6 +1,7 @@
 package streams.dsl.internal.interpreters.fs2
 
 import cats.effect.{ContextShift, IO}
+import cats.kernel.Monoid
 import fs2.{Stream, io, text}
 import streams.dsl.internal._
 import java.nio.file.Paths
@@ -19,15 +20,17 @@ trait FS2 extends FS2Utils {
 
   object Fs2Interpreter extends Interpreter[STREAM] {
 
+    private val chunkSize = 4096
+
     private[internal] def fromInput[A](in: Input[A]): STREAM[A] = in match {
       case PureInput(seq) => Stream.emits(seq.toSeq)
       case FileInput(path) =>
         io.file
-          .readAll[IO](Paths.get(path), global, 4096)
+          .readAll[IO](Paths.get(path), global, chunkSize)
           .asInstanceOf[STREAM[A]]
       case TextFileInput(path) =>
         io.file
-          .readAll[IO](Paths.get(path), global, 4096)
+          .readAll[IO](Paths.get(path), global, chunkSize)
           .through(text.utf8Decode)
           .through(text.lines)
 
@@ -39,6 +42,18 @@ trait FS2 extends FS2Utils {
     ): STREAM[B] = transform match {
       case MapTransform(f)       => s.map(f)
       case MapConcatTransform(f) => mapConcat(s)(f)
+
+    }
+
+    private[internal] def splitConcat[A, B: Monoid](
+      s: STREAM[A],
+      transform: SplitConcatTransform[A, B]
+    ) = {
+      val m = implicitly[Monoid[B]]
+      s.split(transform.splitBy).through { in =>
+        in.flatMap(chunk => Stream(chunk.foldLeft(m.empty)(transform.concat)))
+
+      }
     }
 
     private[internal] def collect[A, B](s: STREAM[A],

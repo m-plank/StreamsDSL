@@ -1,5 +1,7 @@
 package streams.dsl.internal
 
+import cats.kernel.Monoid
+
 /**
   * Created by Bondarenko on Nov, 11, 2019
   *16:49.
@@ -10,6 +12,11 @@ trait Interpreter[F[_]] {
   private[internal] def fromInput[A](in: Input[A]): F[A]
 
   private[internal] def transform[A, B](s: F[A], f: Transform[A, B]): F[B]
+
+  private[internal] def splitConcat[A, B: Monoid](
+    s: F[A],
+    f: SplitConcatTransform[A, B]
+  ): F[B]
 
   private[internal] def collect[A, B](s: F[A], pf: PartialFunction[A, B]): F[B]
 

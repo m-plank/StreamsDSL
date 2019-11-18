@@ -2,6 +2,7 @@ package streams.dsl.internal.interpreters.akka
 
 import akka.stream.scaladsl.{Sink, Source}
 import cats.effect._
+import cats.kernel.Monoid
 import streams.dsl.internal._
 
 /**
@@ -27,6 +28,16 @@ trait AkkaStreams extends AkkaStreamsUtils {
         case MapTransform(f)       => s.map(f)
         case MapConcatTransform(f) => s.mapConcat(f)
       }
+
+    private[internal] def splitConcat[A, B: Monoid](
+      s: STREAM[A],
+      f: SplitConcatTransform[A, B]
+    ) = {
+      val m = implicitly[Monoid[B]]
+      s.splitAfter(f.splitBy)
+        .fold(m.empty)((acc, b) => if (f.splitBy(b)) acc else f.concat(acc, b))
+        .concatSubstreams
+    }
 
     private[internal] def collect[A, B](s: STREAM[A],
                                         pf: PartialFunction[A, B]) =
