@@ -1,11 +1,7 @@
 package streams.dsl.internal.interpreters
 
-import streams.dsl.internal.{
-  EffectsInterpreter,
-  MapConcatTransform,
-  MapTransform,
-  Pure
-}
+import streams.dsl.internal.EffectsInterpreter
+import streams.dsl.internal.algebra.{MapConcatTransform, MapTransform, Pure}
 import scala.collection.immutable.Iterable
 
 /**

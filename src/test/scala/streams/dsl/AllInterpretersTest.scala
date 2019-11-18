@@ -2,8 +2,9 @@ package streams.dsl
 
 import org.scalatest.{FlatSpec, Matchers}
 import streams.dsl.internal.StreamIOAPI.from
+import streams.dsl.internal.algebra.{Pure, PureInput}
 import streams.dsl.internal.interpreters.StreamsAPI._
-import streams.dsl.internal.{Interpreter, Pure, PureInput}
+import streams.dsl.internal.Interpreter
 import streams.dsl.{AkkaImplicits => akka, FS2Implicits => fs2}
 
 /**

@@ -14,8 +14,9 @@ Currently the project is in active development in experimental stage.
 ## Quick example
 ```scala
 import streams.dsl.internal.StreamIOAPI.from
+import streams.dsl.internal.algebra.TextFileInput
 import streams.dsl.internal.interpreters.StreamsAPI._
-import streams.dsl.internal.{Interpreter, MapTransform, TextFileInput}
+import streams.dsl.internal.{ Interpreter, MapTransform }
 import scala.util.Try
 
 trait DslExamples {

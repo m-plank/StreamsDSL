@@ -1,6 +1,7 @@
-package streams.dsl.internal
+package streams.dsl.internal.algebra
 
 import cats.kernel.Monoid
+import streams.dsl.internal.Interpreter
 import scala.collection.immutable.Iterable
 
 /**

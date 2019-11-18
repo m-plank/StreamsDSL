@@ -4,6 +4,20 @@ import akka.stream.scaladsl.{Sink, Source}
 import cats.effect._
 import cats.kernel.Monoid
 import streams.dsl.internal._
+import streams.dsl.internal.algebra.{
+  DropWhileOp,
+  FileInput,
+  FilterOp,
+  FilterOps,
+  Input,
+  MapConcatTransform,
+  MapTransform,
+  PureInput,
+  SplitConcatTransform,
+  TakeWhileOp,
+  TextFileInput,
+  Transform
+}
 
 /**
   * Created by Bondarenko on Nov, 14, 2019

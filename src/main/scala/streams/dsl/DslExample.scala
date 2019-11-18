@@ -2,7 +2,8 @@ package streams.dsl
 
 import streams.dsl.internal.StreamIOAPI.from
 import streams.dsl.internal.interpreters.StreamsAPI._
-import streams.dsl.internal.{Interpreter, TextFileInput}
+import streams.dsl.internal.Interpreter
+import streams.dsl.internal.algebra.TextFileInput
 import scala.util.Try
 
 trait DslExamples {

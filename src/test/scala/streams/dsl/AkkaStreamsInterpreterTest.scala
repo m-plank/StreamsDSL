@@ -2,8 +2,8 @@ package streams.dsl
 
 import akka.util.ByteString
 import org.scalatest.{FlatSpec, Matchers}
-import streams.dsl.internal.FileInput
 import streams.dsl.internal.StreamIOAPI.from
+import streams.dsl.internal.algebra.FileInput
 import streams.dsl.internal.interpreters.StreamsAPI._
 
 /**

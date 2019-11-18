@@ -5,6 +5,16 @@ import streams.dsl.internal._
 import streams.dsl.internal.interpreters.StreamsAPI._
 import scala.util.Try
 import cats.implicits._
+import streams.dsl.internal.algebra.{
+  DropWhileOp,
+  FileInput,
+  FileOutput,
+  FilterOp,
+  PureInput,
+  SplitConcatTransform,
+  TakeWhileOp,
+  TextFileInput
+}
 
 /**
   * Created by Bondarenko on Nov, 13, 2019
