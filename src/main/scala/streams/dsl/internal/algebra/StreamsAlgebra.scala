@@ -2,7 +2,6 @@ package streams.dsl.internal.algebra
 
 import cats.kernel.Monoid
 import streams.dsl.internal.Interpreter
-import scala.collection.immutable.Iterable
 
 /**
   * Created by Bondarenko on Nov, 11, 2019
@@ -12,6 +11,8 @@ import scala.collection.immutable.Iterable
 sealed trait AbsStream[F[_], A]
 
 sealed abstract class StreamQ[F[_]: Interpreter, A] extends AbsStream[F, A] {
+
+  private[internal] def int = implicitly[Interpreter[F]]
 
   private[internal] def stream: F[A]
 
@@ -37,8 +38,7 @@ sealed abstract class StreamQ[F[_]: Interpreter, A] extends AbsStream[F, A] {
 
 case class FromInput[F[_]: Interpreter, A](private val in: Input[A])
     extends StreamQ[F, A] {
-  private[internal] def stream: F[A] =
-    implicitly[Interpreter[F]].fromInput(in)
+  private[internal] def stream: F[A] = int.fromInput(in)
 }
 
 case class Map[F[_]: Interpreter, A, B](private val s: StreamQ[F, A],
@@ -52,23 +52,20 @@ case class SplitConcat[F[_]: Interpreter, A, B: Monoid](
   private val s: StreamQ[F, A],
   private val splitConcat: SplitConcatTransform[A, B]
 ) extends StreamQ[F, B] {
-  private[internal] def stream: F[B] =
-    implicitly[Interpreter[F]].splitConcat(s.stream, splitConcat)
+  private[internal] def stream: F[B] = int.splitConcat(s.stream, splitConcat)
 }
 
 case class Collect[F[_]: Interpreter, A, B](
   private val s: StreamQ[F, A],
   private val pf: PartialFunction[A, B]
 ) extends StreamQ[F, B] {
-  private[internal] def stream: F[B] =
-    implicitly[Interpreter[F]].collect(s.stream, pf)
+  private[internal] def stream: F[B] = int.collect(s.stream, pf)
 }
 
 case class Filter[F[_]: Interpreter, A](private val s: StreamQ[F, A],
                                         private val filterOp: FilterOps[A])
     extends StreamQ[F, A] {
-  private[internal] def stream: F[A] =
-    implicitly[Interpreter[F]].filter(s.stream, filterOp)
+  private[internal] def stream: F[A] = int.filter(s.stream, filterOp)
 }
 
 case class Sink[F[_]: Interpreter, A](private[internal] val s: StreamQ[F, A],
