@@ -22,6 +22,12 @@ sealed abstract class StreamQ[F[_]: Interpreter, A] extends AbsStream[F, A] {
   def splitConcat[B: Monoid](f: SplitConcatTransform[A, B]): StreamQ[F, B] =
     SplitConcat(this, f)
 
+  def dropWhile(op: DropWhileOp[A]): StreamQ[F, A] = Filter(this, op)
+
+  def takeWhile(op: TakeWhileOp[A]): StreamQ[F, A] = Filter(this, op)
+
+  def filter(op: FilterOp[A]): StreamQ[F, A] = Filter(this, op)
+
   def to(out: Output[A]): Sink[F, A] = Sink(this, out)
 
   def pure(): Pure[F, A] = Pure[F, A](this)
@@ -40,12 +46,20 @@ case class FromInput[F[_]: Interpreter, A](private val in: Input[A])
 }
 
 sealed trait Transform[A, B]
+sealed abstract class FilterOps[A](predicate: A => Boolean)
 case class MapTransform[A, B](f: A => B) extends Transform[A, B]
 case class MapConcatTransform[A, B](f: A => Iterable[B]) extends Transform[A, B]
+
+case class DropWhileOp[A](predicate: A => Boolean)
+    extends FilterOps[A](predicate)
+case class TakeWhileOp[A](predicate: A => Boolean)
+    extends FilterOps[A](predicate)
+case class FilterOp[A](predicate: A => Boolean) extends FilterOps[A](predicate)
 
 case class SplitConcatTransform[A, B: Monoid](splitBy: A => Boolean,
                                               concat: (B, A) => B)
 
+/////////STREAM CONVERSIONS/////////////////////////////////////////////
 case class Map[F[_]: Interpreter, A, B](private val s: StreamQ[F, A],
                                         private val transform: Transform[A, B])
     extends StreamQ[F, B] {
@@ -67,6 +81,13 @@ case class Collect[F[_]: Interpreter, A, B](
 ) extends StreamQ[F, B] {
   private[internal] def stream: F[B] =
     implicitly[Interpreter[F]].collect(s.stream, pf)
+}
+
+case class Filter[F[_]: Interpreter, A](private val s: StreamQ[F, A],
+                                        private val filterOp: FilterOps[A])
+    extends StreamQ[F, A] {
+  private[internal] def stream: F[A] =
+    implicitly[Interpreter[F]].filter(s.stream, filterOp)
 }
 
 case class Sink[F[_]: Interpreter, A](private[internal] val s: StreamQ[F, A],

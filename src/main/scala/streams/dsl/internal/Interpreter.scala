@@ -20,6 +20,8 @@ trait Interpreter[F[_]] {
 
   private[internal] def collect[A, B](s: F[A], pf: PartialFunction[A, B]): F[B]
 
+  private[internal] def filter[A](s: F[A], filterOp: FilterOps[A]): F[A]
+
 }
 
 trait EffectsInterpreter[F[_], EFFECT[_]] {

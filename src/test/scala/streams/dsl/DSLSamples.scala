@@ -30,6 +30,13 @@ trait DSLSamples {
       .through(mapConcat(_.split(" ").toList))
       .pure()
 
+  def filterOpsDsl[F[_]: Interpreter] =
+    from(PureInput(Range(0, 11).toList))
+      .dropWhile(DropWhileOp(_ < 2))
+      .takeWhile(TakeWhileOp(_ < 8))
+      .filter(FilterOp(_ % 2 == 0))
+      .pure()
+
   def splitConcatDsl[F[_]: Interpreter] =
     from(
       PureInput(

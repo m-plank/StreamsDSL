@@ -60,6 +60,12 @@ trait FS2 extends FS2Utils {
                                         pf: PartialFunction[A, B]): STREAM[B] =
       s.collect(pf)
 
+    private[internal] def filter[A](s: STREAM[A], filterOp: FilterOps[A]) =
+      filterOp match {
+        case DropWhileOp(predicate) => s.dropWhile(predicate)
+        case TakeWhileOp(predicate) => s.takeWhile(predicate)
+        case FilterOp(predicate)    => s.filter(predicate)
+      }
   }
 
   object fs2EffectInterpreter extends EffectsInterpreter[STREAM, IO] {

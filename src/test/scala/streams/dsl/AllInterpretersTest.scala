@@ -57,4 +57,16 @@ class AllInterpretersTest extends FlatSpec with Matchers with DSLSamples {
 
   }
 
+  it should "filter, drop while and take while elements in stream" in {
+
+    filterOpsDsl(akka.int)
+      .pureRun(akka.eff)
+      .unsafeRunSync() shouldBe List(2, 4, 6)
+
+    filterOpsDsl(fs2.int)
+      .pureRun(fs2.eff)
+      .unsafeRunSync() shouldBe List(2, 4, 6)
+
+  }
+
 }
