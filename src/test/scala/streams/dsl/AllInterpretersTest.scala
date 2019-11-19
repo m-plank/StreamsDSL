@@ -73,6 +73,18 @@ class AllInterpretersTest
 
   }
 
+  it should "zip with index a stream" in {
+
+    zipWithIndexDsl(akka.int)
+      .pureRun(akka.eff)
+      .unsafeRunSync() shouldBe List((1, 0), (1, 1), (2, 2), (3, 3), (5, 4))
+
+    zipWithIndexDsl(fs2.int)
+      .pureRun(fs2.eff)
+      .unsafeRunSync() shouldBe List((1, 0), (1, 1), (2, 2), (3, 3), (5, 4))
+
+  }
+
   it should "execute effectfull stream with akka streams" in {
     val out = "out.txt"
 

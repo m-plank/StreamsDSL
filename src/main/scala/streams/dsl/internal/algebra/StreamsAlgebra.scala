@@ -30,6 +30,8 @@ sealed abstract class StreamQ[F[_]: Interpreter, A] extends AbsStream[F, A] {
 
   def filter(op: FilterOp[A]): StreamQ[F, A] = Filter(this, op)
 
+  def zipWithIndex(): StreamQ[F, (A, Long)] = ZipWithIndex(this)
+
   def to(out: Output[A]): Sink[F, A] = Sink(this, out)
 
   def pure(): Pure[F, A] = Pure[F, A](this)
@@ -66,6 +68,11 @@ case class Filter[F[_]: Interpreter, A](private val s: StreamQ[F, A],
                                         private val filterOp: FilterOps[A])
     extends StreamQ[F, A] {
   private[internal] def stream: F[A] = int.filter(s.stream, filterOp)
+}
+
+case class ZipWithIndex[F[_]: Interpreter, A](private val s: StreamQ[F, A])
+    extends StreamQ[F, (A, Long)] {
+  private[internal] def stream = int.zipWithIndex(s.stream)
 }
 
 case class Sink[F[_]: Interpreter, A](private[internal] val s: StreamQ[F, A],

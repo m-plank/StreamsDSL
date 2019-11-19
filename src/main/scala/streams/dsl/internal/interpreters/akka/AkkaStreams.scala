@@ -66,6 +66,8 @@ trait AkkaStreams extends AkkaStreamsUtils {
         case TakeWhileOp(predicate) => s.takeWhile(predicate)
         case FilterOp(predicate)    => s.filter(predicate)
       }
+
+    private[internal] def zipWithIndex[A](s: STREAM[A]) = s.zipWithIndex
   }
 
   object akkaEffectInterpreter extends EffectsInterpreter[STREAM, IO] {

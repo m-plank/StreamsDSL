@@ -30,6 +30,8 @@ trait Interpreter[F[_]] {
 
   private[internal] def filter[A](s: F[A], filterOp: FilterOps[A]): F[A]
 
+  private[internal] def zipWithIndex[A](s: F[A]): F[(A, Long)]
+
 }
 
 trait EffectsInterpreter[F[_], EFFECT[_]] {

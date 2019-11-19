@@ -82,6 +82,8 @@ trait FS2 extends FS2Utils {
         case TakeWhileOp(predicate) => s.takeWhile(predicate)
         case FilterOp(predicate)    => s.filter(predicate)
       }
+
+    private[internal] def zipWithIndex[A](s: STREAM[A]) = s.zipWithIndex
   }
 
   object fs2EffectInterpreter extends EffectsInterpreter[STREAM, IO] {

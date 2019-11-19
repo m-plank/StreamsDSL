@@ -69,7 +69,10 @@ trait DSLSamples {
       )
       .pure()
 
-  //
+  def zipWithIndexDsl[F[_]: Interpreter] =
+    from(PureInput(List(1, 1, 2, 3, 5)))
+      .zipWithIndex()
+      .pure()
 
   def impureDsl[F[_]: Interpreter]() = {
     from(TextFileInput("src/test/resources/numbers.txt"))
