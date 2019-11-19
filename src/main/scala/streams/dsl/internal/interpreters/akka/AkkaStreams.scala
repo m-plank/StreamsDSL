@@ -78,8 +78,8 @@ trait AkkaStreams extends AkkaStreamsUtils {
         IO.delay {
           fa.s.stream
             .map(s => ByteString(s"$s\n"))
-            .to(FileIO.toPath(Paths.get(path)))
-            .run()
+            .runWith(FileIO.toPath(Paths.get(path)))
+
         }
     }
   }
