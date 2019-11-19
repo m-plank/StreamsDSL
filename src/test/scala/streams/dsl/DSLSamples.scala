@@ -8,7 +8,7 @@ import cats.implicits._
 import streams.dsl.internal.algebra.{
   DropWhileOp,
   FileInput,
-  FileOutput,
+  TextFileOutput,
   FilterOp,
   PureInput,
   SplitConcatTransform,
@@ -75,7 +75,8 @@ trait DSLSamples {
     from(TextFileInput("src/test/resources/numbers.txt"))
       .through(map(str => Try(str.toInt).toEither))
       .collect { case Right(v) => v }
-      .to(FileOutput("out.txt"))
+      .through(map(_.toString))
+      .to(TextFileOutput("out.txt"))
 
   }
 }

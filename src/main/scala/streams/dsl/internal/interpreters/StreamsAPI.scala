@@ -1,7 +1,12 @@
 package streams.dsl.internal.interpreters
 
 import streams.dsl.internal.EffectsInterpreter
-import streams.dsl.internal.algebra.{MapConcatTransform, MapTransform, Pure}
+import streams.dsl.internal.algebra.{
+  MapConcatTransform,
+  MapTransform,
+  Pure,
+  Sink
+}
 import scala.collection.immutable.Iterable
 
 /**
@@ -21,6 +26,14 @@ object StreamsAPI {
       implicit interpreter: EffectsInterpreter[F, E]
     ): E[Seq[A]] =
       interpreter.runPure(p)
+  }
+
+  implicit class StreamsEffectRunner[F[_], A](eff: Sink[F, A]) {
+    def runWithEffects[E[_]](
+      implicit interpreter: EffectsInterpreter[F, E]
+    ): E[Unit] = {
+      interpreter.execEffect(eff)
+    }
   }
 
 }

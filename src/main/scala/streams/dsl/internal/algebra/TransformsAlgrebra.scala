@@ -28,4 +28,4 @@ case class SplitConcatTransform[A, B: Monoid](splitBy: A => Boolean,
                                               concat: (B, A) => B)
 
 sealed trait Output[A]
-case class FileOutput[A](private val path: String) extends Output[A]
+case class TextFileOutput(private val path: String) extends Output[String]

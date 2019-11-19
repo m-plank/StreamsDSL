@@ -13,9 +13,11 @@ import streams.dsl.internal.algebra.{
   MapConcatTransform,
   MapTransform,
   PureInput,
+  Sink,
   SplitConcatTransform,
   TakeWhileOp,
   TextFileInput,
+  TextFileOutput,
   Transform
 }
 import java.nio.file.Paths
@@ -83,7 +85,24 @@ trait FS2 extends FS2Utils {
   }
 
   object fs2EffectInterpreter extends EffectsInterpreter[STREAM, IO] {
+    import scala.concurrent.ExecutionContext.global
+
     def exec[A](fa: STREAM[A]): IO[Seq[A]] = fa.compile.toList
+
+    def execEffect[A](fa: Sink[STREAM, A]): IO[Unit] = {
+      fa.out match {
+        case TextFileOutput(path) =>
+          fa.s.stream
+            .map(_.toString)
+            .intersperse("\n")
+            .through(text.utf8Encode)
+            .through {
+              io.file.writeAll(Paths.get(path), global)
+            }
+            .compile
+            .drain
+      }
+    }
   }
 
 }

@@ -5,6 +5,7 @@ import streams.dsl.internal.algebra.{
   FilterOps,
   Input,
   Pure,
+  Sink,
   SplitConcatTransform,
   Transform
 }
@@ -34,6 +35,8 @@ trait Interpreter[F[_]] {
 trait EffectsInterpreter[F[_], EFFECT[_]] {
 
   def exec[A](fa: F[A]): EFFECT[Seq[A]]
+
+  def execEffect[A](fa: Sink[F, A]): EFFECT[Unit]
 
   private[internal] def runPure[A](pure: Pure[F, A]): EFFECT[Seq[A]] = {
     exec(pure.s.stream)

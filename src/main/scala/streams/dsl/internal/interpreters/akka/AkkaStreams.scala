@@ -1,6 +1,7 @@
 package streams.dsl.internal.interpreters.akka
 
-import akka.stream.scaladsl.{Sink, Source}
+import akka.stream.scaladsl.{FileIO, Sink, Source}
+import akka.util.ByteString
 import cats.effect._
 import cats.kernel.Monoid
 import streams.dsl.internal._
@@ -16,8 +17,10 @@ import streams.dsl.internal.algebra.{
   SplitConcatTransform,
   TakeWhileOp,
   TextFileInput,
+  TextFileOutput,
   Transform
 }
+import java.nio.file.Paths
 
 /**
   * Created by Bondarenko on Nov, 14, 2019
@@ -68,6 +71,16 @@ trait AkkaStreams extends AkkaStreamsUtils {
   object akkaEffectInterpreter extends EffectsInterpreter[STREAM, IO] {
     def exec[A](fa: STREAM[A]): IO[Seq[A]] = {
       toIO(fa.runWith(Sink.collection))
+    }
+
+    def execEffect[A](fa: algebra.Sink[STREAM, A]): IO[Unit] = fa.out match {
+      case TextFileOutput(path) =>
+        IO.delay {
+          fa.s.stream
+            .map(s => ByteString(s"$s\n"))
+            .to(FileIO.toPath(Paths.get(path)))
+            .run()
+        }
     }
   }
 
