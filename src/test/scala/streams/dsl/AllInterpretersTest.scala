@@ -86,10 +86,10 @@ class AllInterpretersTest
   }
 
   it should "execute effectfull stream with akka streams" in {
-    val out = "out.txt"
+    val out = "out-1.txt"
 
     withFile(out) {
-      impureDsl()(akka.int)
+      writeToFileExpression(out)(akka.int)
         .runWithEffects[IO](akka.eff)
         .attempt
         .unsafeRunSync() should beRight(())
@@ -100,10 +100,10 @@ class AllInterpretersTest
   }
 
   it should "execute effectfull stream with FS2 streams" in {
-    val out = "out.txt"
+    val out = "out-2.txt"
 
     withFile(out) {
-      impureDsl()(fs2.int)
+      writeToFileExpression(out)(fs2.int)
         .runWithEffects[IO](fs2.eff)
         .attempt
         .unsafeRunSync() should beRight(())
