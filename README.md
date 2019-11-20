@@ -1,3 +1,5 @@
+
+[![xxxx](https://travis-ci.com/m-plank/StreamsDSL.svg)](https://travis-ci.com/m-plank/StreamsDSL)
 [![codecov](https://codecov.io/gh/m-plank/StreamsDSL/branch/master/graph/badge.svg)](https://codecov.io/gh/m-plank/StreamsDSL)
 
 # StreamsDSL
