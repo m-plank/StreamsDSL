@@ -94,6 +94,8 @@ class AllInterpretersTest
         .attempt
         .unsafeRunSync() should beRight(())
 
+      Thread.sleep(3000)
+
       linesFromFile(out) should beRight(List("1", "1", "2", "3", "5", "8"))
     }
 
