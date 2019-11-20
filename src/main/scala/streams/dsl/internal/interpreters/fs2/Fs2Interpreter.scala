@@ -1,11 +1,13 @@
 package streams.dsl.internal.interpreters.fs2
 
-import cats.effect.{ContextShift, IO}
+import cats.effect.{ContextShift, IO, Resource}
 import cats.kernel.Monoid
 import fs2.{Stream, io, text}
 import streams.dsl.internal._
 import streams.dsl.internal.algebra._
 import java.nio.file.Paths
+import java.util.concurrent.Executors
+import scala.concurrent.ExecutionContext
 
 /**
   * Created by Bondarenko on Nov, 12, 2019
@@ -14,6 +16,13 @@ import java.nio.file.Paths
   */
 trait FS2 extends FS2Utils {
   import scala.concurrent.ExecutionContext.global
+
+  import cats.data.{Reader, Kleisli, ReaderT}
+
+  private lazy val blockingExecutionContext =
+    Resource.make(
+      IO(ExecutionContext.fromExecutorService(Executors.newCachedThreadPool()))
+    )(ec => IO(ec.shutdown()))
 
   type STREAM[A] = Stream[IO, A]
 
@@ -25,10 +34,12 @@ trait FS2 extends FS2Utils {
 
     private[internal] def fromInput[A](in: Input[A]): STREAM[A] = in match {
       case PureInput(seq) => Stream.emits(seq.toSeq)
+
       case FileInput(path) =>
         io.file
           .readAll[IO](Paths.get(path), global, chunkSize)
           .asInstanceOf[STREAM[A]]
+
       case TextFileInput(path) =>
         io.file
           .readAll[IO](Paths.get(path), global, chunkSize)
@@ -72,22 +83,28 @@ trait FS2 extends FS2Utils {
   }
 
   object fs2EffectInterpreter extends EffectsInterpreter[STREAM, IO] {
-    import scala.concurrent.ExecutionContext.global
+    //import scala.concurrent.ExecutionContext.global
 
     def exec[A](fa: STREAM[A]): IO[Seq[A]] = fa.compile.toList
 
     def execEffect[A](fa: Sink[STREAM, A]): IO[Unit] = {
       fa.out match {
         case TextFileOutput(path) =>
-          fa.s.stream
-            .map(_.toString)
-            .intersperse("\n")
-            .through(text.utf8Encode)
-            .through {
-              io.file.writeAll(Paths.get(path), global)
+          Stream
+            .resource(blockingExecutionContext)
+            .flatMap { blockingEC =>
+              fa.s.stream
+                .map(_.toString)
+                .intersperse("\n")
+                .through(text.utf8Encode)
+                .through {
+                  io.file.writeAll(Paths.get(path), blockingEC)
+                }
+
             }
             .compile
             .drain
+
       }
     }
   }

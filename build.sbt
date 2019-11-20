@@ -11,6 +11,7 @@ lazy val root = (project in file(".")).settings(
   testScalastyle := scalastyle.in(Compile).toTask("").value,
   (test in Test) := ((test in Test) dependsOn testScalastyle).value,
   libraryDependencies ++= Seq(
+    "org.typelevel" %% "cats-core" % "2.0.0",
     "org.typelevel" %% "cats-effect" % "2.0.0",
     "org.typelevel" %% "cats-free" % "2.0.0",
     "com.typesafe.akka" %% "akka-stream" % "2.6.0",
