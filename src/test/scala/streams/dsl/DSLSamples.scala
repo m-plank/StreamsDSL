@@ -70,7 +70,7 @@ trait DSLSamples {
       .through(map(str => Try(str.toInt).toEither))
       .collect { case Right(v) => v }
       .through(map(_.toString))
-      .to(TextFileOutput(path))
+      .to(writeToFile(path))
 
   }
 }

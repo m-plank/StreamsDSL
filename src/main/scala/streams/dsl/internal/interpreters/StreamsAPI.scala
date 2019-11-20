@@ -19,6 +19,8 @@ object StreamsAPI {
 
   def map[A, B](f: A => B) = MapTransform(f)
 
+  def writeToFile(path: String) = TextFileOutput(path)
+
   def mapConcat[A, B](f: A => Iterable[B]) = MapConcatTransform(f)
 
   implicit class StreamsPureRunner[F[_], A](p: Pure[F, A]) {
