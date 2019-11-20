@@ -1,7 +1,6 @@
 package streams.dsl.utils
 
-import java.io.File
-import java.nio.file.{Files, Path, Paths}
+import java.nio.file.{Files, Paths}
 import scala.io.Source
 import scala.util.{Failure, Success, Try}
 

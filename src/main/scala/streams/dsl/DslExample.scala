@@ -1,14 +1,13 @@
 package streams.dsl
 
+import streams.dsl.internal.Interpreter
 import streams.dsl.internal.StreamIOAPI.from
 import streams.dsl.internal.interpreters.StreamsAPI._
-import streams.dsl.internal.Interpreter
-import streams.dsl.internal.algebra.TextFileInput
 import scala.util.Try
 
 trait DslExamples {
   def dsl[F[_]: Interpreter] =
-    from(TextFileInput("src/test/resources/numbers.txt"))
+    from(text("src/test/resources/numbers.txt"))
       .through(map(str => Try(str.toInt).toEither))
       .collect { case Right(v) => v }
       .pure()

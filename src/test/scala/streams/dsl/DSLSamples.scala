@@ -1,20 +1,11 @@
 package streams.dsl
 
+import cats.implicits._
 import streams.dsl.internal.StreamIOAPI.from
 import streams.dsl.internal._
+import streams.dsl.internal.algebra.{SplitConcatTransform, TextFileOutput}
 import streams.dsl.internal.interpreters.StreamsAPI._
 import scala.util.Try
-import cats.implicits._
-import streams.dsl.internal.algebra.{
-  DropWhileOp,
-  FileInput,
-  TextFileOutput,
-  FilterOp,
-  PureInput,
-  SplitConcatTransform,
-  TakeWhileOp,
-  TextFileInput
-}
 
 /**
   * Created by Bondarenko on Nov, 13, 2019
@@ -23,7 +14,7 @@ import streams.dsl.internal.algebra.{
   */
 trait DSLSamples {
   def pureDsl[F[_]: Interpreter]() = {
-    from(TextFileInput("src/test/resources/numbers.txt"))
+    from(text("src/test/resources/numbers.txt"))
       .through(map(str => Try(str.toInt).toEither))
       .collect { case Right(v) => v }
       .pure()
@@ -31,25 +22,25 @@ trait DSLSamples {
   }
 
   def bytesStreamDsl[F[_]: Interpreter]() = {
-    from(FileInput[Byte]("src/test/resources/numbers.txt")).pure()
+    from(bytes("src/test/resources/numbers.txt")).pure()
 
   }
 
   def mapConcatDsl[F[_]: Interpreter] =
-    from(PureInput(List("No pain no gain")))
+    from(pure(List("No pain no gain")))
       .through(mapConcat(_.split(" ").toList))
       .pure()
 
   def filterOpsDsl[F[_]: Interpreter] =
-    from(PureInput(Range(0, 11).toList))
-      .dropWhile(DropWhileOp(_ < 2))
-      .takeWhile(TakeWhileOp(_ < 8))
-      .filter(FilterOp(_ % 2 == 0))
+    from(pure(Range(0, 11).toList))
+      .dropWhile(_ < 2)
+      .takeWhile(_ < 8)
+      .filter(_ % 2 == 0)
       .pure()
 
   def splitConcatDsl[F[_]: Interpreter] =
     from(
-      PureInput(
+      pure(
         List(
           "No",
           "pain",
@@ -70,12 +61,12 @@ trait DSLSamples {
       .pure()
 
   def zipWithIndexDsl[F[_]: Interpreter] =
-    from(PureInput(List(1, 1, 2, 3, 5)))
+    from(pure(List(1, 1, 2, 3, 5)))
       .zipWithIndex()
       .pure()
 
   def writeToFileExpression[F[_]: Interpreter](path: String) = {
-    from(TextFileInput("src/test/resources/numbers.txt"))
+    from(text("src/test/resources/numbers.txt"))
       .through(map(str => Try(str.toInt).toEither))
       .collect { case Right(v) => v }
       .through(map(_.toString))

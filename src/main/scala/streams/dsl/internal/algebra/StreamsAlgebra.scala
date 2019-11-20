@@ -24,11 +24,14 @@ sealed abstract class StreamQ[F[_]: Interpreter, A] extends AbsStream[F, A] {
   def splitConcat[B: Monoid](f: SplitConcatTransform[A, B]): StreamQ[F, B] =
     SplitConcat(this, f)
 
-  def dropWhile(op: DropWhileOp[A]): StreamQ[F, A] = Filter(this, op)
+  def dropWhile(predicate: A => Boolean): StreamQ[F, A] =
+    Filter(this, DropWhileOp(predicate))
 
-  def takeWhile(op: TakeWhileOp[A]): StreamQ[F, A] = Filter(this, op)
+  def takeWhile(predicate: A => Boolean): StreamQ[F, A] =
+    Filter(this, TakeWhileOp(predicate))
 
-  def filter(op: FilterOp[A]): StreamQ[F, A] = Filter(this, op)
+  def filter(predicate: A => Boolean): StreamQ[F, A] =
+    Filter(this, FilterOp(predicate))
 
   def zipWithIndex(): StreamQ[F, (A, Long)] = ZipWithIndex(this)
 

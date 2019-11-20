@@ -5,21 +5,7 @@ import akka.util.ByteString
 import cats.effect._
 import cats.kernel.Monoid
 import streams.dsl.internal._
-import streams.dsl.internal.algebra.{
-  DropWhileOp,
-  FileInput,
-  FilterOp,
-  FilterOps,
-  Input,
-  MapConcatTransform,
-  MapTransform,
-  PureInput,
-  SplitConcatTransform,
-  TakeWhileOp,
-  TextFileInput,
-  TextFileOutput,
-  Transform
-}
+import streams.dsl.internal.algebra._
 import java.nio.file.Paths
 
 /**

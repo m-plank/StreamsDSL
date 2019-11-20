@@ -1,14 +1,7 @@
 package streams.dsl.internal
 
 import cats.kernel.Monoid
-import streams.dsl.internal.algebra.{
-  FilterOps,
-  Input,
-  Pure,
-  Sink,
-  SplitConcatTransform,
-  Transform
-}
+import streams.dsl.internal.algebra._
 
 /**
   * Created by Bondarenko on Nov, 11, 2019

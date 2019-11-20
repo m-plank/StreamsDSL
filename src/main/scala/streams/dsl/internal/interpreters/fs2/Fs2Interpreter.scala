@@ -4,22 +4,7 @@ import cats.effect.{ContextShift, IO}
 import cats.kernel.Monoid
 import fs2.{Stream, io, text}
 import streams.dsl.internal._
-import streams.dsl.internal.algebra.{
-  DropWhileOp,
-  FileInput,
-  FilterOp,
-  FilterOps,
-  Input,
-  MapConcatTransform,
-  MapTransform,
-  PureInput,
-  Sink,
-  SplitConcatTransform,
-  TakeWhileOp,
-  TextFileInput,
-  TextFileOutput,
-  Transform
-}
+import streams.dsl.internal.algebra._
 import java.nio.file.Paths
 
 /**

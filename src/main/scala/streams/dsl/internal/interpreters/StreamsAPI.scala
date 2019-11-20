@@ -1,12 +1,7 @@
 package streams.dsl.internal.interpreters
 
 import streams.dsl.internal.EffectsInterpreter
-import streams.dsl.internal.algebra.{
-  MapConcatTransform,
-  MapTransform,
-  Pure,
-  Sink
-}
+import streams.dsl.internal.algebra._
 import scala.collection.immutable.Iterable
 
 /**
@@ -15,6 +10,12 @@ import scala.collection.immutable.Iterable
   *Project: StreamsDSL
   */
 object StreamsAPI {
+
+  def text(path: String) = TextFileInput(path)
+
+  def bytes(path: String) = FileInput[Byte](path)
+
+  def pure[A](seq: Iterable[A]) = PureInput[A](seq)
 
   def map[A, B](f: A => B) = MapTransform(f)
 

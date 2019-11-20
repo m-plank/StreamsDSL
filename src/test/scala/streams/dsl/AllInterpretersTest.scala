@@ -3,10 +3,10 @@ package streams.dsl
 import cats.effect.IO
 import cats.scalatest.EitherMatchers
 import org.scalatest.{FlatSpec, Matchers}
-import streams.dsl.internal.StreamIOAPI.from
-import streams.dsl.internal.algebra.{Pure, PureInput}
-import streams.dsl.internal.interpreters.StreamsAPI._
 import streams.dsl.internal.Interpreter
+import streams.dsl.internal.StreamIOAPI.from
+import streams.dsl.internal.algebra.PureInput
+import streams.dsl.internal.interpreters.StreamsAPI._
 import streams.dsl.utils.IOUtils
 import streams.dsl.{AkkaImplicits => akka, FS2Implicits => fs2}
 
