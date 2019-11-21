@@ -1,13 +1,13 @@
-package streams.dsl.utils
+package streams.dsl
 
 import java.nio.file.{Files, Paths}
 import scala.io.Source
 import scala.util.{Failure, Success, Try}
 
 /**
-  * Created by Bondarenko on Nov, 19, 2019
-  * 21:45.
-  * Project: StreamsDSL
+  * Created by Bondarenko on Nov, 21, 2019
+  * 22:40.
+  * Project: root
   */
 trait IOUtils {
 

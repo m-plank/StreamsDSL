@@ -21,7 +21,6 @@ lazy val core = project
         )
       )
     ),
-    name := "StreamsDSL",
     resolvers += Resolver.mavenLocal,
     testScalastyle := scalastyle.in(Compile).toTask("").value,
     (test in Test) := ((test in Test) dependsOn testScalastyle).value,
