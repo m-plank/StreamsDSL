@@ -21,7 +21,7 @@ trait IOUtils {
     deleteFile(path)
     val result = Try(f)
     deleteFile(path)
-    Thread.sleep(1000)
+    Thread.sleep(3000)
     result match {
       case Failure(exception) => throw exception
       case Success(value)     => value
