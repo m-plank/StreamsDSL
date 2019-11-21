@@ -18,7 +18,7 @@ class AkkaStreamsUtilsTest
 
   "AkkaStreamsUtils" should "read lines from file" in {
     toIO {
-      readLinesFromFile("src/test/resources/numbers.txt").runWith(
+      readLinesFromFile("core/src/test/resources/numbers.txt").runWith(
         Sink.collection
       )
     }.map(_.toList)
@@ -27,7 +27,7 @@ class AkkaStreamsUtilsTest
 
   "AkkaStreamsUtils" should "read bytes from file" in {
     toIO {
-      readBytesFromFile[ByteString]("src/test/resources/numbers.txt")
+      readBytesFromFile[ByteString]("core/src/test/resources/numbers.txt")
         .map(_.toList)
         .runWith(Sink.collection)
     }.map(_.toList.flatten.toList)

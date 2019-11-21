@@ -23,7 +23,7 @@ class AkkaStreamsInterpreterTest
   }
 
   "AkkaStreamsInterpreter" should "read bytes from input file" in {
-    val dsl = from(FileInput[ByteString]("src/test/resources/numbers.txt"))
+    val dsl = from(FileInput[ByteString]("core/src/test/resources/numbers.txt"))
       .pure()
 
     dsl.pureRun.map(_.flatten).unsafeRunSync() shouldBe
@@ -32,7 +32,7 @@ class AkkaStreamsInterpreterTest
   }
 
   ignore should "read bytes from input file with incorrect type param" in {
-    val dsl = from(FileInput[Byte]("src/test/resources/numbers.txt"))
+    val dsl = from(FileInput[Byte]("core/src/test/resources/numbers.txt"))
       .pure()
 
     dsl.pureRun.unsafeRunSync().toList shouldBe

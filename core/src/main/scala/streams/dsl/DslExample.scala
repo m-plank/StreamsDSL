@@ -7,7 +7,7 @@ import scala.util.Try
 
 trait DslExamples {
   def dsl[F[_]: Interpreter] =
-    from(text("src/test/resources/numbers.txt"))
+    from(text("core/src/test/resources/numbers.txt"))
       .through(map(str => Try(str.toInt).toEither))
       .collect { case Right(v) => v }
       .pure()

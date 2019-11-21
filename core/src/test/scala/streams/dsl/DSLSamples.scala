@@ -14,7 +14,7 @@ import scala.util.Try
   */
 trait DSLSamples {
   def pureDsl[F[_]: Interpreter]() = {
-    from(text("src/test/resources/numbers.txt"))
+    from(text("core/src/test/resources/numbers.txt"))
       .through(map(str => Try(str.toInt).toEither))
       .collect { case Right(v) => v }
       .pure()
@@ -22,7 +22,7 @@ trait DSLSamples {
   }
 
   def bytesStreamDsl[F[_]: Interpreter]() = {
-    from(bytes("src/test/resources/numbers.txt")).pure()
+    from(bytes("core/src/test/resources/numbers.txt")).pure()
 
   }
 
@@ -66,7 +66,7 @@ trait DSLSamples {
       .pure()
 
   def writeToFileExpression[F[_]: Interpreter](path: String) = {
-    from(text("src/test/resources/numbers.txt"))
+    from(text("core/src/test/resources/numbers.txt"))
       .through(map(str => Try(str.toInt).toEither))
       .collect { case Right(v) => v }
       .through(map(_.toString))
