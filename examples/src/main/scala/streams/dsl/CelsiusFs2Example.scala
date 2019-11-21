@@ -14,7 +14,7 @@ object CelsiusFs2Example extends App with Examples {
   import streams.dsl.FS2Implicits._
 
   def run: IO[Unit] =
-    convertToCelsius("examples/src/main/resources/fahrenheit.txt").runWithEffects
+    convertToCelsius("celsius-fs2.txt").runWithEffects
 
   //run.unsafeRunSync()
 
@@ -24,7 +24,7 @@ object CelsiusAkkaExample extends App with Examples {
   import streams.dsl.AkkaImplicits._
 
   def run: IO[Unit] =
-    convertToCelsius("examples/src/main/resources/fahrenheit.txt").runWithEffects
+    convertToCelsius("celsius-akka.txt").runWithEffects
 
   //run.unsafeRunSync()
 
@@ -32,10 +32,10 @@ object CelsiusAkkaExample extends App with Examples {
 
 trait Examples {
   def convertToCelsius[F[_]: Interpreter](path: String) = {
-    from(text(path))
+    from(text("examples/src/main/resources/fahrenheit.txt"))
       .filter(s => !s.trim.isEmpty && !s.startsWith("//"))
       .through(map(line => fahrenheitToCelsius(line.toDouble).toString))
-      .to(writeToFile("celsius.txt"))
+      .to(writeToFile(path))
 
   }
 

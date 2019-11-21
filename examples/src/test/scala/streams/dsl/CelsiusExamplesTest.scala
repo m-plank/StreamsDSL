@@ -15,7 +15,7 @@ class CelsiusExamplesTest
     with IOUtils {
 
   it should "convert Fahrenheit to Celsius with FS2" in {
-    val path = "celsius.txt"
+    val path = "celsius-fs2.txt"
     withFile(path) {
       CelsiusFs2Example.run.attempt.unsafeRunSync() should beRight(())
       linesFromFile(path).map(_.head) should beRight("-7.777777777777779")
@@ -24,10 +24,10 @@ class CelsiusExamplesTest
   }
 
   it should "convert Fahrenheit to Celsius with akka" in {
-    val path = "celsius.txt"
+    val path = "celsius-akka.txt"
     withFile(path) {
       CelsiusAkkaExample.run.attempt.unsafeRunSync() should beRight(())
-
+      Thread.sleep(3000)
       linesFromFile(path).map(_.head) should beRight("-7.777777777777779")
     }
 
