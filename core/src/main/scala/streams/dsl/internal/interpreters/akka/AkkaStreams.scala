@@ -64,11 +64,12 @@ trait AkkaStreams extends AkkaStreamsUtils {
     def execEffect[A](fa: algebra.Sink[STREAM, A]): IO[Unit] = fa.out match {
       case TextFileOutput(path) =>
         IO.delay {
-            fa.s.stream
-              .map(s => ByteString(s"$s\n"))
-              .runWith(FileIO.toPath(Paths.get(path)))
-          }
-          .flatMap(_ => IO.fromFuture(IO(system.terminate())).map(_ => ()))
+          fa.s.stream
+            .map(s => ByteString(s"$s\n"))
+            .runWith(FileIO.toPath(Paths.get(path)))
+        }
+      //.flatMap(_ => IO.fromFuture(IO(system.terminate())).map(_ => ()))
+      //todo: handle resources properly
     }
   }
 
