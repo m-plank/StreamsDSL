@@ -46,3 +46,7 @@ object AkkaStreamsExample extends App with DslExamples {
 }
 
 ```
+
+See also [Celsius example](https://github.com/m-plank/StreamsDSL/blob/master/examples/src/main/scala/streams/dsl/CelsiusFs2Example.scala)
+
+
