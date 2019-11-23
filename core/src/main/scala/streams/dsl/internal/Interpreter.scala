@@ -8,6 +8,7 @@ import streams.dsl.internal.algebra._
   *16:49.
   *Project: StreamsDSL
   */
+//final encoding
 trait Interpreter[F[_]] {
 
   private[internal] def fromInput[A](in: Input[A]): F[A]

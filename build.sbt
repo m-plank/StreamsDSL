@@ -1,11 +1,11 @@
 lazy val root = (project in file("."))
+  .settings(organization := "streams.dsl", name := "StreamsDSL")
   .aggregate(core, examples)
 
 lazy val core = project
   .settings(
     inThisBuild(
       List(
-        organization := "streams.dsl",
         scalaVersion := "2.12.7",
         version := "0.1.0-SNAPSHOT",
         libraryDependencies ++= Seq(

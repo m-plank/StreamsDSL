@@ -10,6 +10,7 @@ import streams.dsl.internal.Interpreter
   */
 sealed trait AbsStream[F[_], A]
 
+//initial encoding
 sealed abstract class StreamQ[F[_]: Interpreter, A] extends AbsStream[F, A] {
 
   private[internal] def int = implicitly[Interpreter[F]]
